@@ -1,6 +1,6 @@
 @extends('layouts.basedashboard')
 
-@section('titulo', 'Gestión de tipos')
+@section('titulo', 'Tipos de Usuarios')
 
 @push('CSS')
 <!-- DataTables CSS -->
@@ -16,9 +16,9 @@
                 <div>
                     <h2 class="fw-bold text-primary mb-1">
                         <i class="bi bi-people-fill me-2"></i>
-                        Gestión de tipos
+                        Tipos de Usuarios
                     </h2>
-                    <p class="text-muted mb-0">Administra los tipos del sistema</p>
+                    <p class="text-muted mb-0">Gestiona los tipos usuarios del sistema</p>
                 </div>
                 <div>
                     <a href="{{ route('tipos.create') }}" class="btn btn-success">
@@ -28,11 +28,11 @@
                 </div>
             </div>
 
-            <!-- Tabla de tipos -->
+            <!-- Tabla de Usuarios -->
             <div class="card">
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table table-striped table-hover" id="tablatipos">
+                        <table class="table table-striped table-hover" id="tablaTipos">
                             <thead class="table-primary">
                                 <tr>
                                     <th>ID</th>
@@ -45,25 +45,23 @@
                                 @foreach($tipos as $tipo)
                                 <tr>
                                     <td>{{ $tipo->id }}</td>
-                                    <td>{{ $tipo->username }}</td>
-                                    <td>{{ $tipo->email }}</td>
-                                
+                                    <td>{{ $tipo->tipo }}</td>
+                                    <td>{{-- $tipo->email --}}</td>
                                     <td>
                                         <div class="btn-group" role="group">
                                             <!-- Botón Editar -->
                                             <button type="button" class="btn btn-sm btn-outline-warning" 
-                                                    onclick="editartipo({{ $tipo->id }})"
+                                                    onclick="editarTipo({{ $tipo->id }})"
                                                     title="Editar tipo">
                                                 <i class="bi bi-pencil-square"></i>
                                             </button>
                                             
                                             <!-- Botón Eliminar -->
                                             <button type="button" class="btn btn-sm btn-outline-danger" 
-                                                    onclick="eliminartipo({{ $tipo->id }}, '{{ $tipo->tipo }}')"
+                                                    onclick="eliminarTipo({{ $tipo->id }}, '{{ $tipo->tipo }}')"
                                                     title="Eliminar tipo">
                                                 <i class="bi bi-trash"></i>
                                             </button>
-                                            
                                         </div>
                                     </td>
                                 </tr>
@@ -84,15 +82,15 @@
 <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
 
 <script>
-    function editartipo(id){
+    function editarTipo(id){
         // Redirigir a la página de edición
         window.location.href = `{{ route('tipos.index') }}/${id}/edit`;
     }
     
-    function eliminartipo(id, username){
+    function eliminarTipo(id, tipo){
         Swal.fire({
             title: "¿Eliminar tipo?",
-            text: `¿Estás seguro de eliminar al tipo "${username}"?`,
+            text: `¿Estás seguro de eliminar el tipo "${tipo}"?`,
             icon: "warning",
             showCancelButton: true,
             confirmButtonColor: "#d33",
@@ -124,12 +122,12 @@
             }
         });
     }
-    
+</script>
 @endpush
 
 @push('JSOR')
     // Inicializar DataTables
-    $("#tablatipos").DataTable({
+    $("#tablaTipos").DataTable({
         language: {
             url: "https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json"
         },

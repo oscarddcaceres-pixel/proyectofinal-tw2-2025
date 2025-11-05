@@ -1,6 +1,6 @@
 @extends('layouts.basedashboard')
 
-@section('titulo', 'Editar tipo')
+@section('titulo', 'Editar Tipo de Usuario')
 
 @section('contenido')
 <div class="container-fluid">
@@ -11,9 +11,9 @@
                 <div>
                     <h2 class="fw-bold text-warning mb-1">
                         <i class="bi bi-pencil-square me-2"></i>
-                        Editar tipo
+                        Editar Tipo de Usuario
                     </h2>
-                    <p class="text-muted mb-0">Modifica la información del tipo: <strong>{{ $tipo->tiponame }}</strong></p>
+                    <p class="text-muted mb-0">Modifica el tipo de usuario: <strong>{{ $tipo->tipo }}</strong></p>
                 </div>
                 <div>
                     <a href="{{ route('tipos.index') }}" class="btn btn-secondary">
@@ -30,76 +30,77 @@
                         <div class="card-header bg-warning text-dark">
                             <h5 class="mb-0">
                                 <i class="bi bi-person-fill me-2"></i>
-                                Información del tipo
+                                Información del Tipo
                             </h5>
                         </div>
                         <div class="card-body">
-                            <form id="formEditartipo" method="POST" action="{{ route('tipos.update', $tipo->id) }}">
+                            <form id="formEditarTipo" method="POST" action="{{ route('tipos.update', $tipo->id) }}">
                                 @csrf
-
-                             <div class="mb-4">
-                                    <label for="tipo" class="form-label fw-simebold">
+                                @method('PUT')
+                                
+                                <div class="mb-4">
+                                    <label for="tipo" class="form-label fw-semibold">
                                         <i class="bi bi-person-badge text-primary me-1"></i>
                                         Nombre del Tipo <span class="text-danger">*</span>
                                     </label>
-                                    <input 
+                                    <input
                                         type="text"
                                         class="form-control @error('tipo') is-invalid @enderror"
                                         id="tipo"
                                         name="tipo"
                                         value="{{ old('tipo', $tipo->tipo) }}"
-                                        placeholder="Ej; admin,profesor,estudiante, etc..."
+                                        placeholder="Ej: admin, profesor, estudiante, etc..."
                                         maxlength="50"
                                         required
                                     >
                                     @error('tipo')
                                         <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
+                                    @enderror
                                 </div>
                                 <div class="mb-4">
                                     <label class="form-label fw-semibold">Ejemplos comunes:</label>
                                     <div>
                                         <button
-                                            type="buttom"
-                                            class?"btn btn-sm btn-outline-primary ejemplo-tipo"
+                                            type="button"
+                                            class="btn btn-sm btn-outline-primary ejemplo-tipo"
                                             data-tipo="admin"
                                         >admin</button>
                                         <button
-                                            type="buttom"
-                                            class?"btn btn-sm btn-outline-succes ejemplo-tipo"
+                                            type="button"
+                                            class="btn btn-sm btn-outline-success ejemplo-tipo"
                                             data-tipo="profesor"
                                         >profesor</button>
                                         <button
-                                            type="buttom"
-                                            class?"btn btn-sm btn-outline-info ejemplo-tipo"
+                                            type="button"
+                                            class="btn btn-sm btn-outline-info ejemplo-tipo"
                                             data-tipo="estudiante"
                                         >estudiante</button>
                                         <button
-                                            type="buttom"
-                                            class?"btn btn-sm btn-outline-warning ejemplo-tipo"
+                                            type="button"
+                                            class="btn btn-sm btn-outline-warning ejemplo-tipo"
                                             data-tipo="coordinador"
                                         >coordinador</button>
                                         <button
-                                            type="buttom"
-                                            class?"btn btn-sm btn-outline-secondary ejemplo-tipo"
+                                            type="button"
+                                            class="btn btn-sm btn-outline-secondary ejemplo-tipo"
                                             data-tipo="invitado"
                                         >invitado</button>
                                     </div>
                                     <small class="text-muted">Haz clic en cualquier boton ejemplo para usarlo</small>
                                 </div>
-                                <div class="mb-4" id="previewTIpo" style="display: none;">
-                                    <label class="form-label fw-semibold">Vista previa</label>
+                                <div class="mb-4" id="previewTipo" style="display: none;">
+                                    <label class="form-label fw-semibold">Vista previa:</label>
                                     <div id="badgePreview"></div>
                                 </div>
                                 <div class="d-flex justify-content-end gap-2">
-                                    <a href="{{ route('tipos.index') }}" class="btn btn-content-end gap-2">
+                                    <a href="{{ route('tipos.index') }}" class="btn btn-secondary">
                                         <i class="bi bi-x-circle me-1"></i>
                                         Cancelar
                                     </a>
-                                    <button type="submit" class="btn btn-success" id="btnGuardar">
-                                         <i class="bi bi-check-circle me-1"></i>
-                                        Crear Tipo
-                                </div>
+                                    <button type="submit" class="btn btn-warning" id="btnActualizar">
+                                        <i class="bi bi-check-circle me-1"></i>
+                                        Actualizar Tipo
+                                    </button>
                                 </div>
                             </form>
                         </div>
@@ -119,16 +120,45 @@
             btn.html('<i class="bi bi-hourglass-split"></i> Actualizando...').prop("disabled", true);
         }
         else{
-            btn.html('<i class="bi bi-check-circle me-1"></i> Actualizar tipo').prop("disabled", false);
+            btn.html('<i class="bi bi-check-circle me-1"></i> Actualizar Usuario').prop("disabled", false);
         }
     }
-    
+    function actualizarPreview(tipo){
+        const preview = $("#previewTipo");
+        const badgePreview = $("#badgePreview");
+        
+        if( tipo.trim() ){
+            // Determinar color del badge según el tipo
+            let colorClass = "bg-secondary";
+            if(tipo.toLowerCase() === "admin") colorClass = "bg-danger";
+            else if(tipo.toLowerCase() === "profesor") colorClass = "bg-success";
+            else if(tipo.toLowerCase() === "estudiante") colorClass = "bg-primary";
+            else if(tipo.toLowerCase() === "coordinador") colorClass = "bg-warning";
+            
+            const badge = `<span class="badge ${colorClass} fs-6">
+                <i class="bi bi-person-badge me-1"></i>${tipo}
+            </span>`;
+            
+            badgePreview.html(badge);
+        }
+        else{
+            badgePreview.html('<span class="text-muted">Ingresa un tipo para ver la vista previa</span>');
+        }
+    }
 </script>
 @endpush
 
 @push('JSOR')
-    // Manejo del formulario
-    $("#formEditartipo").on("submit", function(e){
+    actualizarPreview( $("#tipo").val() );
+    $("#tipo").on("input", function(){
+        actualizarPreview( $(this).val() );
+    });
+    $(".ejemplo-tipo").on("click", function(){
+        const tipo = $(this).data("tipo");
+        $("#tipo").val(tipo);
+        actualizarPreview( tipo );
+    });
+    $("#formEditarTipo").on("submit", function(e){
         e.preventDefault();
         cambiarEstadoBoton(true);
         $.ajax({
@@ -138,8 +168,8 @@
             success: function(response){
                 Swal.fire({
                     icon: "success",
-                    title: "¡tipo actualizado!",
-                    text: "El tipo se ha actualizado correctamente",
+                    title: "¡Tipo actualizado!",
+                    text: "El tipo de usuario se ha actualizado correctamente",
                     timer: 1500,
                     showConfirmButton: false,
                     timerProgressBar: true
@@ -165,5 +195,5 @@
         });
     });
     
-    console.log("Vista editar tipo cargada");
+    console.log("Vista editar usuario cargada");
 @endpush

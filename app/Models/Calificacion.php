@@ -16,6 +16,7 @@ class Calificacion extends Model
         'calificacion',
         'materias_x_usuarios_id'
     ];
+    
     public function materiaXUsuarios(){
         return $this->belongsTo(materiaXUsuarios::class,'materias_x_usuarios_id');
     }

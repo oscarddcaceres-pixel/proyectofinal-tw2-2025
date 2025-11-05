@@ -10,20 +10,20 @@ use App\Models\Tipo;
 class TipoController extends Controller
 {
     public function index(){
-      $tipos = Tipo::all();
-      return view('tipos.index', compact('tipos'));
+        $tipos = Tipo::all();
+        return view('tipos.index', compact('tipos'));
     }
     public function create(){
-    return view ('tipos.create');
+        return view('tipos.create');
     }
     public function store(Request $request){
         $validator = Validator::make($request->all(), [
-            'tipo' => 'required|string|max:255|unique:users',
+            'tipo' => 'required|string|max:50|unique:tipos'
         ],
         [
             'tipo.required' => 'El tipo es obligatorio.',
-            'tipo.unique' => 'Este tipo ya está en uso.',
-            'tipos_id.required' => 'Debe seleccionar un tipo de tipo.',
+            'tipo.max' => 'El tipo no puede tener más de 50 caracteres.',
+            'tipo.unique' => 'Este tipo ya existe.'
         ]);
         if( $validator->fails() ){
             if( $request->ajax() ){
@@ -39,17 +39,17 @@ class TipoController extends Controller
         }  
         try{
             Tipo::create([
-                'tipo' => $request->tipo,
+                'tipo' => $request->tipo
             ]);
             if( $request->ajax() ){
                 return response()->json([
                     'success' => true,
-                    'message' => 'tipo creado correctamente'
+                    'message' => 'Tipo creado correctamente'
                 ]);
             }
             return redirect()
             ->route('tipos.index')
-            ->with('success', 'tipo creado correctamente');
+            ->with('success', 'Tipo creado correctamente');
         }
         catch( \Exception $e ){
             if ($request->ajax()) {
@@ -63,6 +63,10 @@ class TipoController extends Controller
             ->with('error', 'Error al crear el tipo')
             ->withInput();
         }
+    }
+    public function edit($id){
+        $tipo = Tipo::findOrFail($id);
+        return view('tipos.edit', compact('tipo'));
     }
     public function update(Request $request, $id){
         $tipo = Tipo::findOrFail($id);
@@ -116,6 +120,13 @@ class TipoController extends Controller
     public function destroy($id){
         try{
             $tipo = Tipo::findOrFail($id);
+
+            if( $tipo->users()->count() > 0 ){
+                return redirect()
+                ->route('tipos.index')
+                ->with('error', 'No se puede eliminar el tipo porque tiene usuarios asignados');
+            }
+
             $tipo->delete();
               
             return redirect()
