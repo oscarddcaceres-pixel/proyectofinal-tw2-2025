@@ -8,12 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 class Tipo extends Model
 {
     //use HasFactory;
-    public $timestamps= false;
+    public $timestamps = false;
 
     protected $table = 'tipos';
 
     protected $fillable = [
-        'tipos'
+        'tipo'
     ];
 
     public function users(){

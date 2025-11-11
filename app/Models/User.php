@@ -19,7 +19,7 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'tipos_id',
-        'name',
+        'username',
         'email',
         'password',
     ];
@@ -46,8 +46,8 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
-      // Relación: Un usuario pertenece a un tipo
-     public function tipo(){
+    // Relación: Un usuario pertenece a un tipo
+    public function tipo(){
         return $this->belongsTo(Tipo::class, 'tipos_id');
     }
 
