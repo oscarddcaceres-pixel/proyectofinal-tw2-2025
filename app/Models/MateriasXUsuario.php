@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class MateriasXUsuario extends Model
 {
     //use HasFactory;
-    public $timestamps = false; 
+    public $timestamps = false;
 
     protected $table = 'materias_x_usuarios';
 
@@ -17,15 +17,15 @@ class MateriasXUsuario extends Model
         'users_id'
     ];
 
-    public function materia (){
-        return $this->belongsTo(Materia::class,'materia_id');
+    public function materia(){
+        return $this->belongsTo(Materia::class, 'materias_id');
     }
 
-     public function user (){
-        return $this->belongsTo(Materia::class,'user_id');
+    public function user(){
+        return $this->belongsTo(User::class, 'users_id');
     }
 
-     public function calificaciones (){
-        return $this->belongsTo(Materia::class,'materias_x_usuarios_id');
+    public function calificaciones(){
+        return $this->hasMany(Calificacion::class, 'materias_x_usuarios_id');
     }
 }

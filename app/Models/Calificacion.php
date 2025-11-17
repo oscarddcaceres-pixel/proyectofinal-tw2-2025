@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Calificacion extends Model
 {
     //use HasFactory;
-    public $timestamps = false; 
+    public $timestamps = false;
 
     protected $table = 'calificaciones';
 
@@ -16,15 +16,16 @@ class Calificacion extends Model
         'calificacion',
         'materias_x_usuarios_id'
     ];
-    public function materiaXUsuarios(){
-        return $this->belongsTo(materiaXUsuarios::class,'materias_x_usuarios_id');
+
+    public function materiasXUsuarios(){
+        return $this->belongsTo(MateriasXUsuario::class, 'materias_x_usuarios_id');
     }
 
-     public function materias (){
-        return $this->belongsTo(Materia::class,'id', 'id','materias_x_usuarios_id', 'materia_id');
+    public function materias(){
+        return $this->hasOneThrough(Materia::class, 'id', 'id', 'materias_x_usuarios_id', 'materias_id');
     }
 
-     public function user (){
-        return $this->belongsTo(Materia::class,'id', 'id','materias_x_usuarios_id','materia_id');
+    public function user(){
+        return $this->hasOneThrough(User::class, 'id', 'id', 'materias_x_usuarios_id', 'materias_id');
     }
 }
